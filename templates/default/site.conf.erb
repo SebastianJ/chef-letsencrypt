@@ -1,0 +1,17 @@
+# How to install: <%= @binary %> --config <%= @config_path %>.conf certonly
+
+# We use a 4096 bit RSA key instead of 2048
+rsa-key-size = <%= @rsa_key_size %>
+
+email = <%= @email %>
+domains = <%= @hostnames %>
+
+text = True
+agree-tos = True
+renew-by-default = True
+
+authenticator = webroot
+
+# This is the webroot directory of your domain in which
+# letsencrypt will write a hash in /.well-known/acme-challenge directory.
+webroot-path = <%= @webroot_path %>

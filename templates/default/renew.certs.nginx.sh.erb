@@ -1,0 +1,29 @@
+#!/bin/bash
+#================================================================
+# Let's Encrypt renewal script for Nginx
+# Usage: ./renew.certs.nginx.sh
+#================================================================
+
+# The script tries to renew certificates, if no renewals are attempted, fails and quits.
+# If renewals are attempted, restarts nginx if configtest succeeds.
+# Logs all output to <%= @renew_log_path %>
+
+CLIENT=<%= @binary %>
+NGINX=<%= @nginx_binary %>
+LOG_FILE=<%= @renew_log_path %>
+STATUS_MESSAGE="No renewals were attempted."
+
+# Check for letsencrypt-auto client and nginx binary
+test -x $CLIENT || exit 0
+test -x $NGINX || exit 0
+
+if $CLIENT renew | /usr/bin/tee --append $LOG_FILE | /bin/grep -q "$STATUS_MESSAGE"; then
+  echo "$(date): Successfully checked for certificate renewals - no renewals were attempted." >> $LOG_FILE;
+else
+  if $NGINX -t >/dev/null 2>&1; then
+    echo "$(date): Renew Attempted. Reloading nginx..." >> $LOG_FILE;
+    $NGINX -s reload;
+  fi
+fi
+
+exit 0;
