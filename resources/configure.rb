@@ -10,7 +10,7 @@ property :webroot_path, String
 
 action :create do
   template new_resource.template_path do
-    source 'site.conf.erb'
+    source 'cert.conf.erb'
     owner 'root'
     group 'root'
     mode 0755

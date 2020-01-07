@@ -46,8 +46,8 @@ action :create do
       new_resource.nginx_binary.to_s.empty?
     end
   end
-    
-  # Generate example site configuration
+  
+  # Generate example cert configuration
   example_domain = 'example.com'
   
   letsencrypt_configure example_domain do
