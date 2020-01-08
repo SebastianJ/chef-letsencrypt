@@ -1,12 +1,12 @@
 default_action :create
 
-property :binary_dir,         String, default: '/opt/certbot'
-property :binary,             String, default: lazy { "#{binary_dir}/certbot-auto" }
-
-property :installation_dir,   String, default: '/etc/letsencrypt'
+property :installation_dir,   String, name_attribute: true, default: '/etc/letsencrypt'
 property :configs_dir,        String, default: lazy { "#{installation_dir}/configs" }
 property :extras_dir,         String, default: lazy { "#{binary_dir}-extras" }
 property :log_dir,            String, default: '/var/log/letsencrypt'
+
+property :binary_dir,         String, default: '/opt/certbot'
+property :binary,             String, default: lazy { "#{binary_dir}/certbot-auto" }
 
 property :git_repo,           String, default: 'git://github.com/certbot/certbot.git'
 property :git_branch,         String, default: 'master'
