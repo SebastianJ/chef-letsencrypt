@@ -1,22 +1,30 @@
 default_action :create
 
-property :domain,             String, name_attribute: true
+property :domain,             String,  name_attribute: true
 
-property :binary,             String, default: '/opt/certbot/certbot-auto'
-property :installation_dir,   String, default: '/etc/letsencrypt'
+property :installation_dir,   String,  default: '/etc/letsencrypt'
+property :configs_dir,        String,  default: lazy { "#{installation_dir}/configs" }
+property :config_path,        String,  default: lazy { "#{configs_dir}/#{domain}.conf" }
 
-property :config_path,        String
+property :binary,             String,  default: '/opt/certbot/certbot-auto'
+
 property :rsa_key_size,       Integer, default: 4096
+
 property :email,              String
+
 property :hostnames,          String
 property :webroot_path,       String
 
+property :template_cookbook,  String,  default: "letsencrypt"
+property :template_source,    String,  default: "cert.conf.erb"
+
 action :create do
-  template new_resource.template_path do
-    source 'cert.conf.erb'
-    owner 'root'
-    group 'root'
-    mode 0755
+  template new_resource.config_path do
+    source    new_resource.template_source
+    cookbook  new_resource.template_cookbook
+    owner     'root'
+    group     'root'
+    mode      0755
 
     variables(
       binary:       new_resource.binary,
