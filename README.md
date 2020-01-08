@@ -12,15 +12,15 @@ letsencrypt_install '/etc/letsencrypt'
 If you're running Nginx and want to set up auto-renewal of certificates:
 
 ```
-letsencrypt_nginx "path_to_your_nginx_binary"
+letsencrypt_nginx 'path_to_your_nginx_binary'
 ```
 
 Configure a certificate:
 
 ```
-letsencrypt_configure "example.com" do
-  email "email@example.com"
-  hostnames "example.com,www.example.com"
-  webroot_path "/var/www"
+letsencrypt_configure 'example.com' do
+  email 'email@example.com'
+  hostnames 'example.com,www.example.com'
+  webroot_path '/var/www'
 end
 ```
