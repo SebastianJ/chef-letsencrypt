@@ -13,14 +13,18 @@ property :log_dir,            String, default: '/var/log/letsencrypt'
 property :renew_script_path,  String, default: lazy { "#{extras_dir}/renew.certs.nginx.sh" }
 property :renew_log_path,     String, default: lazy { "#{log_dir}/letsencrypt.renew.log" }
 
+property :template_cookbook,  String, default: "letsencrypt"
+property :template_source,    String, default: "renew.certs.nginx.sh.erb"
+
 property :cron,               Hash, default: {enabled: true, minute: "0", hour: "2", day: "*", month: "*", weekday: "*"}
 
 action :create do
   template new_resource.renew_script_path do
-    source 'renew.certs.nginx.sh.erb'
-    owner 'root'
-    group 'root'
-    mode 0500
+    source    new_resource.template_source
+    cookbook  new_resource.template_cookbook
+    owner     'root'
+    group     'root'
+    mode      0500
     
     variables(
       binary:         new_resource.binary,
