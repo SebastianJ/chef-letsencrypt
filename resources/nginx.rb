@@ -1,5 +1,7 @@
 default_action :create
 
+property :nginx_binary,       String, name_attribute: true
+
 property :binary_dir,         String, default: '/opt/certbot'
 property :binary,             String, default: lazy { "#{binary_dir}/certbot-auto" }
 
@@ -11,7 +13,6 @@ property :log_dir,            String, default: '/var/log/letsencrypt'
 property :renew_script_path,  String, default: lazy { "#{extras_dir}/renew.certs.nginx.sh" }
 property :renew_log_path,     String, default: lazy { "#{log_dir}/letsencrypt.renew.log" }
 
-property :nginx_binary,       String
 property :cron,               Hash, default: {enabled: true, minute: "0", hour: "2", day: "*", month: "*", weekday: "*"}
 
 action :create do
