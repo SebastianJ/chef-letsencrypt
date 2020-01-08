@@ -6,15 +6,13 @@ Chef cookbook to set up Let's Encrypt SSL certificates
 Install Let's Encrypt:
 
 ```
-letsencrypt_install
+letsencrypt_install '/etc/letsencrypt'
 ```
 
 If you're running Nginx and want to set up auto-renewal of certificates:
 
 ```
-letsencrypt_nginx do
-  nginx_binary "path_to_your_nginx_binary"
-end
+letsencrypt_nginx "path_to_your_nginx_binary"
 ```
 
 Configure a certificate:
