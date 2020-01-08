@@ -16,7 +16,7 @@ property :renew_log_path,     String, default: lazy { "#{log_dir}/letsencrypt.re
 property :template_cookbook,  String, default: "letsencrypt"
 property :template_source,    String, default: "renew.certs.nginx.sh.erb"
 
-property :cron,               Hash, default: {enabled: true, minute: "0", hour: "2", day: "*", month: "*", weekday: "*"}
+property :cron,               Hash,   default: {enabled: true, minute: "0", hour: "2", day: "*", month: "*", weekday: "*"}
 
 action :create do
   template new_resource.renew_script_path do
@@ -32,9 +32,7 @@ action :create do
       renew_log_path: new_resource.renew_log_path
     )
     
-    not_if do
-      new_resource.nginx_binary.to_s.empty?
-    end
+    not_if { new_resource.nginx_binary.to_s.empty? }
   end
 
   # Install Cron
@@ -47,20 +45,19 @@ action :create do
     command   new_resource.renew_script_path
     action    new_resource.cron[:enabled] ? :create : :delete
     
-    not_if do
-      new_resource.nginx_binary.to_s.empty?
-    end
+    not_if { new_resource.nginx_binary.to_s.empty? }
   end
   
   # Generate example cert configuration
-  example_domain = 'example.com'
+  example_domain    =   'example.com'
   
   letsencrypt_configure example_domain do
-    binary        new_resource.binary
-    config_path   "#{new_resource.extras_dir}/#{example_domain}.conf"
-    email         "email@#{example_domain}"
-    hostnames     "#{example_domain},www.#{example_domain}"
-    webroot_path  "/var/www/apps/shared"
+    binary              new_resource.binary
+    config_path         "#{new_resource.extras_dir}/#{example_domain}.conf"
+    email               "email@#{example_domain}"
+    hostnames           "#{example_domain},www.#{example_domain}"
+    webroot_path        "/var/www/apps/shared"
+    request_certificate false
   end
 
 end
