@@ -24,6 +24,7 @@ action :create do
   git new_resource.binary_dir do
     repository new_resource.git_repo
     reference new_resource.git_branch
+    checkout_branch "deploy"
     action :sync
   end
   
