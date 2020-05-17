@@ -36,7 +36,7 @@ action :create do
   end
 
   execute 'prepare python3 environment' do
-    command "python3 #{new_resource.binary_dir}/tools/venv3.py"
+    command "cd #{new_resource.binary_dir} && python3 tools/venv3.py"
     user 'root'
     only_if { platform?('ubuntu') && Chef::VersionConstraint.new('>= 20.04').include?(node['platform_version']) }
   end
