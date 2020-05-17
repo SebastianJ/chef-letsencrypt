@@ -41,7 +41,7 @@ action :create do
   end
   
   execute "install letsencrypt certificates for #{new_resource.domain}" do
-    command "#{new_resource.binary} --non-interactive --config #{new_resource.config_path} certonly"
+    command "#{new_resource.binary} certonly --non-interactive --config #{new_resource.config_path}"
     user    "root"
     
     only_if { new_resource.request_certificate && !new_resource.webroot_path.to_s.empty? }

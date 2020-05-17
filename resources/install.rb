@@ -6,6 +6,7 @@ property :log_dir,            String, default: '/var/log/letsencrypt'
 
 property :binary_dir,         String, default: '/opt/certbot'
 property :binary,             String, default: lazy { "#{binary_dir}/certbot-auto" }
+
 property :extras_dir,         String, default: lazy { "#{binary_dir}-extras" }
 
 property :git_repo,           String, default: 'git://github.com/certbot/certbot.git'
@@ -19,19 +20,34 @@ action :create do
       action :install
     end
   end
-
+  
   git new_resource.binary_dir do
     repository new_resource.git_repo
     reference new_resource.git_branch
     action :sync
   end
+  
+  # Ubuntu >= 20.04
+  %w{python3-dev python3-venv gcc libaugeas0 libssl-dev libffi-dev ca-certificates openssl}.each do |pkg|
+    package pkg do
+      action :install
+       only_if { platform?('ubuntu') && Chef::VersionConstraint.new('>= 20.04').include?(node['platform_version']) }
+    end
+  end
 
-  # Run the certbot-auto client so that it can install required dependencies, configuration etc.
+  execute 'prepare python3 environment' do
+    command "python3 #{new_resource.binary_dir}/tools/venv3.py"
+    user 'root'
+    only_if { platform?('ubuntu') && Chef::VersionConstraint.new('>= 20.04').include?(node['platform_version']) }
+  end
+  
+  # Ubuntu <= 18.04
   execute 'run certbot-auto' do
     command "#{new_resource.binary} --non-interactive --os-packages-only"
     user 'root'
     retries 3
     retry_delay 3
+    only_if { platform?('ubuntu') && Chef::VersionConstraint.new('<= 18.04').include?(node['platform_version']) }
   end
 
   dirs = [
