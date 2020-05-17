@@ -15,11 +15,7 @@ property :git_branch,         String, default: 'master'
 action :create do
   resources(execute: 'apt-get update').run_action(:run)
 
-  %w{git bc}.each do |pkg|
-    package pkg do
-      action :install
-    end
-  end
+  package %w{git bc}
   
   git new_resource.binary_dir do
     repository new_resource.git_repo
@@ -29,11 +25,9 @@ action :create do
   end
   
   # Ubuntu >= 20.04
-  %w{python3-dev python3-venv gcc libaugeas0 libssl-dev libffi-dev ca-certificates openssl}.each do |pkg|
-    package pkg do
-      action :install
-       only_if { platform?('ubuntu') && Chef::VersionConstraint.new('>= 20.04').include?(node['platform_version']) }
-    end
+  package %w{python3-dev python3-venv gcc libaugeas0 libssl-dev libffi-dev ca-certificates openssl} do
+    action :install
+    only_if { platform?('ubuntu') && Chef::VersionConstraint.new('>= 20.04').include?(node['platform_version']) }
   end
 
   execute 'prepare python3 environment' do
